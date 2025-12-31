@@ -17,9 +17,15 @@
       }
       .hero-bg {
         position: relative;
-        height: 50vh;
+        height: 100vh;
+        min-height: 400px;
         background-color: #eee;
         overflow: hidden;
+        transition: height 0.1s ease-out;
+        will-change: height;
+      }
+      .hero-bg.scrolled {
+        height: 50vh;
       }
       .hero-bg img {
         width: 100%;
@@ -27,6 +33,10 @@
         object-fit: cover;
         object-position: center 40%;
         filter: brightness(0.8);
+        transition: transform 0.1s ease-out;
+      }
+      .scroll-hint {
+        transition: opacity 0.3s ease-out;
       }
       .timeline-dot {
         width: 10px;
@@ -66,7 +76,7 @@
         ></div>
       </div>
 
-      <div class="relative z-10">
+      <div class="relative z-10 transition-all duration-100 ease-out hero-content">
         <p
           class="text-xs tracking-[0.3em] mb-2 uppercase font-medium opacity-80"
         >
@@ -80,6 +90,13 @@
         <p class="text-sm opacity-90 font-light text-blue-100">
           2026.01.02 - 01.04
         </p>
+      </div>
+      
+      <!-- 스크롤 힌트 -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 scroll-hint">
+        <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
+          <div class="w-1 h-2 bg-white/70 rounded-full animate-bounce"></div>
+        </div>
       </div>
     </header>
 
@@ -303,6 +320,49 @@
           behavior: 'smooth',
         })
       }
+
+      // Hero 배경 스크롤 축소 효과
+      (function() {
+        const hero = document.querySelector('.hero-bg');
+        const heroContent = hero.querySelector('.hero-content');
+        const scrollHint = hero.querySelector('.scroll-hint');
+        const maxScroll = window.innerHeight * 0.5; // 스크롤 전환 구간
+        
+        let ticking = false;
+        
+        function updateHero() {
+          const scrollY = window.scrollY;
+          const progress = Math.min(scrollY / maxScroll, 1);
+          
+          // 100vh에서 50vh로 자연스럽게 축소
+          const newHeight = 100 - (progress * 50);
+          hero.style.height = newHeight + 'vh';
+          
+          // 컨텐츠 살짝 위로 이동하며 페이드 효과
+          const opacity = 1 - (progress * 0.3);
+          const translateY = progress * -20;
+          heroContent.style.opacity = opacity;
+          heroContent.style.transform = `translateY(${translateY}px)`;
+          
+          // 스크롤 힌트 빠르게 사라지기
+          if (scrollHint) {
+            const hintOpacity = Math.max(0, 1 - (scrollY / 100));
+            scrollHint.style.opacity = hintOpacity;
+          }
+          
+          ticking = false;
+        }
+        
+        window.addEventListener('scroll', function() {
+          if (!ticking) {
+            requestAnimationFrame(updateHero);
+            ticking = true;
+          }
+        });
+        
+        // 초기 상태 설정
+        updateHero();
+      })();
     </script>
   </body>
 </html>
