@@ -1,13 +1,16 @@
 {
   "name": "yeosu-travel",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "여수 여행 가이드 웹사이트",
+  "homepage": "https://dok6n.github.io/yeosu-travel",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "gh-pages -d ."
   },
-  "keywords": [],
+  "keywords": ["yeosu", "travel", "korea"],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
 }
